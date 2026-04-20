@@ -1,0 +1,22 @@
+{
+  "name": "cookie-clickers-mobile",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "npx serve .",
+    "cap:copy": "npx cap copy",
+    "cap:sync": "npx cap sync android",
+    "cap:android": "npx cap open android"
+  },
+  "dependencies": {
+    "@capacitor-community/admob": "^6.0.0",
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/core": "^6.1.2",
+    "@capacitor/haptics": "^6.0.3",
+    "@capacitor/ios": "^6.2.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.1.2",
+    "serve": "^14.2.3"
+  }
+}

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Cookie Clickers</string>
+    <string name="title_activity_main">Cookie Clickers</string>
+    <string name="package_name">com.naho.cookieclickers</string>
+    <string name="custom_url_scheme">com.naho.cookieclickers</string>
+</resources>
