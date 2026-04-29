@@ -791,19 +791,24 @@ document.addEventListener('DOMContentLoaded', () => {
         return ADS_CONFIG[platform]?.rewardedAdUnitId || ADS_CONFIG.android.rewardedAdUnitId;
     }
 
-    function hasNativeRewardedAdBridge() {
-        return Boolean(
-            window.AndroidRewardedAd?.showRewardedAd ||
-            window.Capacitor?.Plugins?.AdMobBridge?.showRewardedAd ||
-            window.Capacitor?.Plugins?.AdMob?.showRewardedAd ||
-            (window.Capacitor?.Plugins?.AdMob?.prepareRewardVideoAd && window.Capacitor?.Plugins?.AdMob?.showRewardVideoAd)
-        );
+    async function requestIosTrackingIfNeeded(admobPlugin) {
+        if (!admobPlugin?.trackingAuthorizationStatus || !admobPlugin?.requestTrackingAuthorization) return;
+        if (window.Capacitor?.getPlatform?.() !== 'ios') return;
+
+        try {
+            const statusResult = await admobPlugin.trackingAuthorizationStatus();
+            if (statusResult?.status !== 'notDetermined') return;
+            await admobPlugin.requestTrackingAuthorization();
+        } catch (error) {
+            console.warn('ATT request skipped:', error);
+        }
     }
 
     async function initializeAdMobPlugin() {
         const admobPlugin = window.Capacitor?.Plugins?.AdMob;
         if (!admobPlugin || admobInitialized || !admobPlugin.initialize) return;
 
+        await requestIosTrackingIfNeeded(admobPlugin);
         await admobPlugin.initialize();
         admobInitialized = true;
     }
@@ -871,6 +876,27 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // 広告ボーナスの処理
+    document.querySelectorAll('.ad-reward-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const type = btn.getAttribute('data-type');
+            if (Date.now() < cooldowns[type]) return;
+
+            let duration = 5;
+            if (type === 'fever') duration = 5;
+            if (type === 'jewel') duration = 10;
+            if (type === 'boost') duration = 15;
+
+            const rewarded = await requestRewardedAd(type, duration);
+            if (!rewarded) return;
+
+            giveAdReward(type);
+            cooldowns[type] = Date.now() + COOLDOWN_DURATIONS[type] * 1000;
+            updateDisplay();
+            saveGame();
+        });
+    });
 
     async function showNativeRewardedAd(type) {
         const platform = getAdPlatform();

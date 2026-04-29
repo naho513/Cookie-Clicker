@@ -47,5 +47,7 @@
 	<true/>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-9138341481603997~9411113474</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>お客様に最適な広告を表示するため、他社のアプリやWebサイトをまたいだアクティビティの計測に使用します。</string>
 </dict>
 </plist>
