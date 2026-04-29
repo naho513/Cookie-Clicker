@@ -1,4 +1,4 @@
-package com.naho.cookieclickers;
+package com.naho.sweet.jewel.clicker;
 
 import com.getcapacitor.BridgeActivity;
 

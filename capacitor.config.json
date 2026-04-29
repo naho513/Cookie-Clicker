@@ -1,6 +1,6 @@
 {
-  "appId": "com.naho.cookieclickers",
-  "appName": "Cookie Clickers",
+  "appId": "com.naho.sweet.jewel.clicker",
+  "appName": "Sweet Jewel Clicker",
   "webDir": "www",
   "server": {
     "androidScheme": "https"
