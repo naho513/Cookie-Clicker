@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Sweet Jewel Clicker</string>
-    <string name="title_activity_main">Sweet Jewel Clicker</string>
+    <string name="app_name">Cookie !!</string>
+    <string name="title_activity_main">Cookie !!</string>
     <string name="package_name">com.naho.sweet.jewel.clicker</string>
     <string name="custom_url_scheme">com.naho.sweet.jewel.clicker</string>
 </resources>
