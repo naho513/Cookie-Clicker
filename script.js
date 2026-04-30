@@ -166,13 +166,14 @@ document.addEventListener('DOMContentLoaded', () => {
         calculateCps();
         updateDisplay();
 
-        // App Tracking Transparency (iOS) と AdMob の初期化を早期に行う
-        // Appleの審査ガイドライン 2.1 に対応
-        if (window.Capacitor?.getPlatform?.() === 'ios') {
+        await showBrandSplash();
+
+        // iOS審査対策: 起動後に少し待ってからATTダイアログを表示
+        if (getAdPlatform() === 'ios') {
+            await wait(1500);
             await initializeAdMobPlugin();
         }
 
-        await showBrandSplash();
         await showUpdateDialogIfNeeded();
         checkOfflineBonus();
         checkDailyBonus();

@@ -11,6 +11,9 @@
   "plugins": {
     "SplashScreen": {
       "launchShowDuration": 0
+    },
+    "AdMob": {
+      "initializeOnInAppEvents": true
     }
   }
 }
