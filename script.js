@@ -165,6 +165,13 @@ document.addEventListener('DOMContentLoaded', () => {
         loadGame();
         calculateCps();
         updateDisplay();
+
+        // App Tracking Transparency (iOS) と AdMob の初期化を早期に行う
+        // Appleの審査ガイドライン 2.1 に対応
+        if (window.Capacitor?.getPlatform?.() === 'ios') {
+            await initializeAdMobPlugin();
+        }
+
         await showBrandSplash();
         await showUpdateDialogIfNeeded();
         checkOfflineBonus();
