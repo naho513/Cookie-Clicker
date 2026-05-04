@@ -11,8 +11,21 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Brand Splash Screen -->
     <div id="brand-splash">
-        <img src="assets/images/brand_logo.png" alt="JIRACHI Logo" id="brand-logo">
+        <img src="assets/images/brand_logo.png" alt="Brand Logo" id="brand-logo">
+    </div>
+
+    <!-- Update Notification Overlay -->
+    <div id="update-overlay" class="screen hidden" style="background: rgba(0,0,0,0.8); z-index: 20000; justify-content: center; align-items: center;">
+        <div class="glass-card" style="max-width: 85%;">
+            <h2>アップデートのお知らせ</h2>
+            <p class="subtitle">新しいバージョンがあります。<br>最新版にアップデートして、より快適に使いましょう！</p>
+            <div class="menu-group">
+                <button id="update-now-btn" class="primary-btn">今すぐ更新</button>
+                <button id="update-later-btn" class="secondary-btn">あとで</button>
+            </div>
+        </div>
     </div>
 
     <div id="game-app">
@@ -445,6 +458,120 @@
         </div>
     </div>
 
+    <!-- Stats Panel (Hidden by default) -->
+    <div id="stats-panel" class="panel hidden">
+        <div class="panel-header">
+            <h2>統計</h2>
+            <button class="close-panel">×</button>
+        </div>
+        <div id="stats-content">
+            <div class="stat-item">
+                <span class="stat-label">獲得したボーナス</span>
+                <span id="stat-bonuses" class="stat-value">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">ゲーム開始</span>
+                <span id="stat-start-date" class="stat-value">-</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">焼いたクッキーの数</span>
+                <span id="stat-total-baked" class="stat-value">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">完成した建物</span>
+                <span id="stat-total-buildings" class="stat-value">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">タップごとのクッキーの数</span>
+                <span id="stat-cookies-per-click" class="stat-value">1</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">最長コンボ</span>
+                <span id="stat-max-combo" class="stat-value">0</span>
+            </div>
+            <div class="stats-section">
+                <h3 class="stats-section-title">お菓子図鑑</h3>
+                <div id="sweet-complete-banner" class="sweet-complete-banner hidden">
+                    <span class="sweet-complete-title">お菓子図鑑コンプリート！</span>
+                    <span class="sweet-complete-subtitle">キャンディショップ気分がアップ！</span>
+                </div>
+                <div id="sweet-encyclopedia-reward" class="sweet-reward-box">
+                    <span id="sweet-reward-status">未達成</span>
+                    <span id="sweet-reward-desc">4種類コンプリートで 💎30 + レア出現率アップ</span>
+                </div>
+                <div id="sweet-encyclopedia" class="sweet-encyclopedia-grid">
+                    <div class="sweet-entry locked" data-sweet-type="normal">
+                        <div class="sweet-entry-icon">🌟</div>
+                        <div class="sweet-entry-info">
+                            <span class="sweet-entry-name" data-name="フィーバースター">???</span>
+                            <span class="sweet-entry-desc" data-desc="FEVER x7 を発動">まだ見つけていません</span>
+                            <span class="sweet-entry-count">発見 0回</span>
+                        </div>
+                    </div>
+                    <div class="sweet-entry locked" data-sweet-type="jewel">
+                        <div class="sweet-entry-icon">💎</div>
+                        <div class="sweet-entry-info">
+                            <span class="sweet-entry-name" data-name="ジュエルスター">???</span>
+                            <span class="sweet-entry-desc" data-desc="ジュエル 2-4 個">まだ見つけていません</span>
+                            <span class="sweet-entry-count">発見 0回</span>
+                        </div>
+                    </div>
+                    <div class="sweet-entry locked" data-sweet-type="super">
+                        <div class="sweet-entry-icon">🔥</div>
+                        <div class="sweet-entry-info">
+                            <span class="sweet-entry-name" data-name="スーパースター">???</span>
+                            <span class="sweet-entry-desc" data-desc="x25 / 10秒">まだ見つけていません</span>
+                            <span class="sweet-entry-count">発見 0回</span>
+                        </div>
+                    </div>
+                    <div class="sweet-entry locked" data-sweet-type="rainbow">
+                        <div class="sweet-entry-icon">🌈</div>
+                        <div class="sweet-entry-info">
+                            <span class="sweet-entry-name" data-name="レインボースター">???</span>
+                            <span class="sweet-entry-desc" data-desc="大量クッキーボーナス">まだ見つけていません</span>
+                            <span class="sweet-entry-count">発見 0回</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ad Simulation Overlay -->
+    <div id="ad-simulation-overlay" class="hidden">
+        <div class="ad-content">
+            <div class="ad-timer-container">
+                <span id="ad-timer-count">5</span>
+            </div>
+            <div class="ad-video-mock">
+                <div class="ad-placeholder">
+                    <p>ADVERTISING</p>
+                    <p class="ad-subtitle">動画再生中...</p>
+                </div>
+            </div>
+            <div class="ad-progress-bar"><div id="ad-progress"></div></div>
+        </div>
+    </div>
+
+    <!-- Offline Bonus Modal -->
+    <div id="offline-modal" class="hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>おかえりなさい！</h2>
+            </div>
+            <div class="modal-body">
+                <div class="offline-icon">😴</div>
+                <p>不在の間に建物たちが</p>
+                <div id="offline-cookies-amount">0</div>
+                <p>枚のクッキーを焼いてくれました！</p>
+            </div>
+            <div class="modal-footer">
+                <button id="claim-offline-btn" class="modal-btn secondary">そのまま受け取る</button>
+                <button id="ad-double-offline-btn" class="modal-btn primary">🎬 広告を見て2倍にする！</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Daily Bonus Modal -->
     <div id="daily-modal" class="hidden">
         <div class="modal-content">
@@ -466,26 +593,11 @@
         </div>
     </div>
 
-    <div id="update-modal" class="hidden">
-        <div class="modal-content update-modal-content">
-            <div class="modal-header">
-                <h2>アプリ更新のお知らせ</h2>
-            </div>
-            <div class="modal-body">
-                <div class="offline-icon">🔔</div>
-                <p id="update-message">新しいバージョンがあります。</p>
-                <div id="update-version-box" class="reward-box">
-                    <span id="current-version-label">現在: 1.0.0</span><br>
-                    <span id="latest-version-label">最新: 1.0.1</span>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button id="update-later-btn" class="modal-btn secondary">あとで</button>
-                <button id="update-now-btn" class="modal-btn primary">更新する</button>
-            </div>
-        </div>
-    </div>
-
+    <!-- Firebase SDK (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-remote-config-compat.js"></script>
     <script src="script.js"></script>
 </body>
+
 </html>
