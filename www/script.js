@@ -35,14 +35,33 @@ document.addEventListener('DOMContentLoaded', () => {
             rewardedAdUnitId: 'ca-app-pub-9138341481603997/3187665067'
         }
     };
-    const CURRENT_APP_VERSION = '1.0.0';
-    const LATEST_APP_VERSION = '1.0.1';
-    const UPDATE_STORE_URL = 'https://apps.apple.com/';
-    let rewardedAdBusy = false;
-    let admobInitialized = false;
+    // --- Version Management ---
+    const APP_VERSION = '1.0.0';
+    let latestVersion = '1.0.0';
 
+    // --- Firebase Setup ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyCHMdkBetBQkIBQR5yfPibSuE5NvQ5tciQ",
+        authDomain: "cookie-adfda.firebaseapp.com",
+        projectId: "cookie-adfda",
+        storageBucket: "cookie-adfda.firebasestorage.app",
+        messagingSenderId: "986001142995",
+        appId: "1:986001142995:web:b849b7ceed3bf8fb5e5026",
+        measurementId: "G-M10FLYLEHT"
+    };
+    firebase.initializeApp(firebaseConfig);
+    if (typeof firebase.analytics === 'function') {
+        firebase.analytics();
+    }
+
+    // --- Utils ---
     function wait(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function syncAppHeight() {
+        const viewportHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+        document.documentElement.style.setProperty('--app-height', `${viewportHeight * 0.01}px`);
     }
 
     function getAdPlatform() {
@@ -50,7 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const platform = window.Capacitor.getPlatform();
             if (platform === 'ios' || platform === 'android') return platform;
         }
-
         const ua = navigator.userAgent || '';
         if (/iphone|ipad|ipod/i.test(ua)) return 'ios';
         if (/android/i.test(ua)) return 'android';
@@ -64,9 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 await haptics.impact({ style });
                 return;
             }
-        } catch (error) {
-        }
-
+        } catch (error) {}
         if (navigator.vibrate) {
             if (style === 'heavy') navigator.vibrate(18);
             else if (style === 'medium') navigator.vibrate(12);
@@ -74,108 +90,105 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function compareVersions(current, latest) {
-        const currentParts = current.split('.').map(part => parseInt(part, 10) || 0);
-        const latestParts = latest.split('.').map(part => parseInt(part, 10) || 0);
-        const maxLength = Math.max(currentParts.length, latestParts.length);
-
-        for (let i = 0; i < maxLength; i++) {
-            const currentValue = currentParts[i] || 0;
-            const latestValue = latestParts[i] || 0;
-            if (latestValue > currentValue) return -1;
-            if (latestValue < currentValue) return 1;
-        }
-
-        return 0;
-    }
-
-    function shouldShowUpdateDialog() {
-        return compareVersions(CURRENT_APP_VERSION, LATEST_APP_VERSION) === -1;
-    }
-
+    // --- Brand Splash Logic (Standard) ---
     async function showBrandSplash() {
-        if (!brandSplash || !brandLogo) return;
+        const splash = document.getElementById('brand-splash');
+        const logo = document.getElementById('brand-logo');
+        if (!splash || !logo) return;
 
-        await wait(50);
-        brandLogo.classList.add('fade-in');
-        await wait(500);
-        await wait(500);
-        brandLogo.classList.remove('fade-in');
-        await wait(500);
+        await wait(100);
+        logo.classList.add('fade-in');
+        await wait(1500); // 1.0s fade-in + 0.5s static
 
-        let tapText = brandSplash.querySelector('.brand-splash-tap');
-        if (!tapText) {
-            tapText = document.createElement('p');
-            tapText.textContent = 'タップしてスタート';
-            tapText.className = 'brand-splash-tap';
-            brandSplash.appendChild(tapText);
-        }
+        logo.classList.remove('fade-in');
+        await wait(1000); // 1.0s fade-out
 
-        brandSplash.style.pointerEvents = 'auto';
+        const tapText = document.createElement('p');
+        tapText.textContent = 'タップしてスタート';
+        tapText.className = 'brand-splash-tap';
+        splash.appendChild(tapText);
 
         await new Promise(resolve => {
             const onTap = (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                brandSplash.removeEventListener('click', onTap, true);
-                brandSplash.removeEventListener('touchend', onTap, true);
+                e.preventDefault(); e.stopPropagation();
+                splash.removeEventListener('click', onTap, true);
+                splash.removeEventListener('touchend', onTap, true);
                 resolve();
             };
-            brandSplash.addEventListener('click', onTap, true);
-            brandSplash.addEventListener('touchend', onTap, true);
+            splash.addEventListener('click', onTap, true);
+            splash.addEventListener('touchend', onTap, true);
         });
 
-        brandSplash.style.pointerEvents = 'none';
-        brandSplash.classList.add('fade-out');
-        await wait(500);
-        brandSplash.remove();
+        splash.classList.add('fade-out');
+        await wait(1000);
+        splash.remove();
     }
 
-    async function showUpdateDialogIfNeeded() {
-        if (!updateModal || !shouldShowUpdateDialog()) return;
-
-        currentVersionLabel.textContent = `現在: ${CURRENT_APP_VERSION}`;
-        latestVersionLabel.textContent = `最新: ${LATEST_APP_VERSION}`;
-        updateMessage.textContent = '新しいバージョンがあります。今すぐ更新すると最新機能が使えます。';
-        updateModal.classList.remove('hidden');
-
-        await new Promise(resolve => {
-            const handleLater = () => {
-                cleanup();
-                updateModal.classList.add('hidden');
-                resolve();
-            };
-            const handleUpdate = () => {
-                cleanup();
-                window.open(UPDATE_STORE_URL, '_blank');
-                updateModal.classList.add('hidden');
-                resolve();
-            };
-            const cleanup = () => {
-                updateLaterBtn.removeEventListener('click', handleLater);
-                updateNowBtn.removeEventListener('click', handleUpdate);
-            };
-
-            updateLaterBtn.addEventListener('click', handleLater);
-            updateNowBtn.addEventListener('click', handleUpdate);
-        });
+    // --- Version Check Logic (Standard) ---
+    async function initRemoteConfig() {
+        if (typeof firebase === 'undefined') return;
+        try {
+            const remoteConfig = firebase.remoteConfig();
+            // 標準運用設定 (1時間)
+            remoteConfig.settings.minimumFetchIntervalMillis = 3600000;
+            remoteConfig.defaultConfig = { latestVersion: APP_VERSION };
+            
+            await remoteConfig.activate(); 
+            await remoteConfig.fetchAndActivate();
+            
+            latestVersion = remoteConfig.getString('latestVersion');
+        } catch (e) { 
+            console.warn("Remote Config failed:", e);
+        }
     }
 
+    function checkUpdate() {
+        const isNewer = isNewerVersion(latestVersion, APP_VERSION);
+        console.log("Is newer version available?", isNewer);
+        if (isNewer) {
+            document.getElementById('update-overlay').classList.remove('hidden');
+        }
+    }
+
+    function isNewerVersion(latest, current) {
+        const l = latest.split('.').map(part => parseInt(part, 10) || 0);
+        const c = current.split('.').map(part => parseInt(part, 10) || 0);
+        const maxLength = Math.max(l.length, c.length);
+        for (let i = 0; i < maxLength; i++) {
+            const lv = l[i] || 0;
+            const cv = c[i] || 0;
+            if (lv > cv) return true;
+            if (lv < cv) return false;
+        }
+        return false;
+    }
+
+    // --- Startup Sequence ---
     async function runStartupSequence() {
         loadGame();
         calculateCps();
         updateDisplay();
+        
+        const configPromise = initRemoteConfig();
         await showBrandSplash();
-        await showUpdateDialogIfNeeded();
+        await configPromise;
+        checkUpdate();
+
         checkOfflineBonus();
         checkDailyBonus();
         updateDisplay();
     }
 
-    function syncAppHeight() {
-        const viewportHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-        document.documentElement.style.setProperty('--app-height', `${viewportHeight * 0.01}px`);
-    }
+    // Update Buttons (Standard)
+    document.getElementById('update-later-btn').addEventListener('click', () => {
+        document.getElementById('update-overlay').classList.add('hidden');
+    });
+
+    document.getElementById('update-now-btn').addEventListener('click', () => {
+        // 公開後に正しいストアURLを差し込んでください
+        const storeUrl = window.Capacitor?.getPlatform() === 'ios' ? 'https://apps.apple.com/' : 'https://play.google.com/store/apps/details?id=com.jirachi.sweet.jewel.clicker';
+        window.open(storeUrl, '_system');
+    });
 
     function getViewportCenter() {
         const viewportWidth = window.visualViewport ? window.visualViewport.width : window.innerWidth;
@@ -301,14 +314,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // コンボ表示用DOM
     const comboDisplay = document.getElementById('combo-display');
-    const brandSplash = document.getElementById('brand-splash');
-    const brandLogo = document.getElementById('brand-logo');
-    const updateModal = document.getElementById('update-modal');
-    const updateMessage = document.getElementById('update-message');
-    const currentVersionLabel = document.getElementById('current-version-label');
-    const latestVersionLabel = document.getElementById('latest-version-label');
-    const updateLaterBtn = document.getElementById('update-later-btn');
-    const updateNowBtn = document.getElementById('update-now-btn');
 
     // アップグレード状態管理
     let passiveBuffs = {
