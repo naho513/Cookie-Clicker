@@ -806,11 +806,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function initializeAdMobPlugin() {
-        const admobPlugin = window.Capacitor?.Plugins?.AdMob;
-        if (!admobPlugin || admobInitialized || !admobPlugin.initialize) return;
+        try {
+            const admobPlugin = window.Capacitor?.Plugins?.AdMob;
+            if (!admobPlugin || admobInitialized || !admobPlugin.initialize) return;
 
-        await admobPlugin.initialize();
-        admobInitialized = true;
+            await admobPlugin.initialize();
+            admobInitialized = true;
+        } catch (error) {
+            console.warn('AdMob initialization failed:', error);
+        }
     }
 
     async function showCommunityRewardedAd(payload) {
@@ -931,23 +935,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function requestRewardedAd(type, fallbackDuration) {
+        // 広告機能を一時停止 (Coming Soon)
+        const viewportCenter = getViewportCenter();
+        spawnFloatText(viewportCenter.x, viewportCenter.y, '広告機能は現在準備中です', 'float-text-centered');
+        return false;
+
+        /* 元の処理 (再開時にコメントアウトを外す)
         if (rewardedAdBusy) return false;
-
-        rewardedAdBusy = true;
-        try {
-            if (hasNativeRewardedAdBridge()) {
-                return await showNativeRewardedAd(type);
-            }
-
-            return await startAdSimulation(fallbackDuration);
-        } catch (error) {
-            console.error('Rewarded ad failed:', error);
-            const viewportCenter = getViewportCenter();
-            spawnFloatText(viewportCenter.x, viewportCenter.y, '広告を読み込めませんでした');
-            return false;
-        } finally {
-            rewardedAdBusy = false;
-        }
+        ...
+        */
     }
 
     function giveAdReward(type) {

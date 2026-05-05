@@ -362,13 +362,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-<<<<<<< Updated upstream
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = WVGMNGDNRS;
-=======
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 6D83TQ4JP6;
->>>>>>> Stashed changes
 				INFOPLIST_FILE = App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -388,13 +383,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-<<<<<<< Updated upstream
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = WVGMNGDNRS;
-=======
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 6D83TQ4JP6;
->>>>>>> Stashed changes
 				INFOPLIST_FILE = App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
