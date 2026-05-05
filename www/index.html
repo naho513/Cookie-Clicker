@@ -2,15 +2,198 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#4dabf7">
-    <title>クッキークリッカー (Cookie Clicker)</title>
-    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Fredoka+One&family=Mochiy+Pop+One&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PUPG Mobile HUD Preview</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #1a1a1a;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+            user-select: none;
+            touch-action: none;
+        }
+
+        /* ゲーム画面（背景） */
+        #game-view {
+            width: 100vw;
+            height: 100vh;
+            background: #2a2a2a;
+            position: relative;
+        }
+
+        /* 共通ボタンスタイル */
+        .btn-action {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+        .btn-action:active {
+            transform: scale(0.9);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* ジョイスティック */
+        #joystick-container {
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            position: absolute;
+            bottom: 40px;
+            left: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        #joystick-handle {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            backdrop-filter: blur(5px);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+        }
+
+        /* ミニマップ */
+        #minimap {
+            width: 120px;
+            height: 120px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            overflow: hidden;
+        }
+        #minimap-player {
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-bottom: 12px solid #ffcc00;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* コンパス */
+        #compass {
+            width: 300px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 5px;
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* HPバー */
+        #hp-container {
+            width: 300px;
+            height: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 6px;
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            overflow: hidden;
+        }
+        #hp-fill {
+            width: 85%;
+            height: 100%;
+            background: linear-gradient(to right, #4ade80, #22c55e);
+            transition: width 0.3s;
+        }
+
+        /* 武器スロット */
+        #weapon-slot {
+            width: 120px;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            position: absolute;
+            bottom: 60px;
+            right: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* インタラクトUI */
+        #interact-popup {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid #ffcc00;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+            text-align: center;
+        }
+
+        .icon-label {
+            font-size: 10px;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* ユーティリティ */
+        .absolute { position: absolute; }
+        .fixed { position: fixed; }
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .items-center { align-items: center; }
+        .items-end { align-items: flex-end; }
+        .justify-center { justify-content: center; }
+        .text-xs { font-size: 0.75rem; }
+        .text-sm { font-size: 0.875rem; }
+        .text-lg { font-size: 1.125rem; }
+        .font-bold { font-weight: bold; }
+        .text-yellow-400 { color: #facc15; }
+        .text-yellow-500 { color: #eab308; }
+        .text-red-500 { color: #ef4444; }
+        .bottom-10 { bottom: 2.5rem; }
+        .right-10 { right: 2.5rem; }
+        .right-32 { right: 8rem; }
+        .top-1\/4 { top: 25%; }
+        .left-1\/2 { left: 50%; }
+        .-translate-x-1\/2 { transform: translateX(-50%); }
+        .px-4 { padding-left: 1rem; padding-right: 1rem; }
+        .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+        .rounded { border-radius: 0.25rem; }
+        .opacity-0 { opacity: 0; }
+        .transition-opacity { transition: opacity 0.3s; }
+        .pointer-events-none { pointer-events: none; }
+    </style>
 </head>
 <body>
+<<<<<<< Updated upstream
     <!-- Brand Splash Screen -->
     <div id="brand-splash">
         <img src="assets/images/brand_logo.png" alt="Brand Logo" id="brand-logo">
@@ -156,272 +339,48 @@
                     </div>
                     <button class="buy-btn" data-cost="5100000000">5,100,000,000 cookies</button>
                 </div>
+=======
+    <div id="game-view">
+        <div id="compass">
+            <div class="flex items-center text-sm font-bold" style="gap: 3rem;">
+                <span style="color: rgba(255,255,255,0.8)">W</span>
+                <span class="text-xs" style="color: rgba(255,255,255,0.4)">285</span>
+                <span class="text-lg">NW</span>
+                <span class="text-xs" style="color: rgba(255,255,255,0.4)">315</span>
+                <span class="text-yellow-400">N</span>
+                <span class="text-xs" style="color: rgba(255,255,255,0.4)">15</span>
+>>>>>>> Stashed changes
             </div>
+            <div style="width: 2px; height: 100%; background: #ffcc00; position: absolute; left: 50%;"></div>
         </div>
-
-        <!-- Settings Panel (Hidden by default) -->
-        <div id="settings-panel" class="panel hidden">
-            <div class="panel-header">
-                <h2>設定</h2>
-                <button class="close-panel">×</button>
-            </div>
-            <div id="settings-content">
-                <div class="setting-item">
-                    <span class="setting-label">効果音</span>
-                    <button id="sound-toggle-btn" class="toggle-btn on">ON</button>
-                </div>
-                <div class="setting-item">
-                    <span class="setting-label">自動クリックの音</span>
-                    <button id="auto-sound-toggle-btn" class="toggle-btn off">OFF</button>
-                </div>
-                <div class="setting-item">
-                    <span class="setting-label">自動クリックの触感</span>
-                    <button id="auto-haptics-toggle-btn" class="toggle-btn off">OFF</button>
-                </div>
-                <div class="setting-item">
-                    <span class="setting-label">遊び方</span>
-                    <div class="help-text">
-                        <p>🍪 クッキーをタップして焼こう！</p>
-                        <p>🏗️ 建物で自動生産を増やそう！</p>
-                        <p>✨ 強化アイテムで効率アップ！</p>
-                        <p>🌟 流れ星をタップしてフィーバー！</p>
-                    </div>
-                </div>
-                <div class="setting-item danger-zone">
-                    <h3>データ管理</h3>
-                    <button id="reset-btn-main" class="modal-btn secondary">セーブを削除してリセット</button>
-                </div>
-            </div>
+        <div id="minimap">
+            <div id="minimap-player"></div>
         </div>
-
-        <!-- Upgrades Panel (Hidden by default) -->
-        <div id="upgrades-panel" class="panel hidden">
-            <div class="panel-header">
-                <h2>アップグレード</h2>
-                <button class="close-panel">×</button>
-            </div>
-            <div id="upgrades-items">
-                <!-- Click Upgrade -->
-                <div class="upgrade-item" id="upgrade-click">
-                    <div class="item-info">
-                        <span class="item-name">強化指先 (クリック2倍) ☝️</span>
-                    </div>
-                    <button class="buy-upgrade-btn" data-cost="500">500 cookies</button>
-                </div>
-                <!-- Building Specific -->
-                <div class="upgrade-item" id="upgrade-grandma">
-                    <div class="item-info">
-                        <span class="item-name">秘伝レシピ (おばあちゃん2倍) 📜</span>
-                    </div>
-                    <button class="buy-upgrade-btn" data-cost="1000">1,000 cookies</button>
-                </div>
-                <div class="upgrade-item" id="upgrade-factory">
-                    <div class="item-info">
-                        <span class="item-name">工業用潤滑油 (工場2倍) 🛢️</span>
-                    </div>
-                    <button class="buy-upgrade-btn" data-cost="10000">10,000 cookies</button>
-                </div>
-                <!-- Fever Upgrade -->
-                <div class="upgrade-item" id="upgrade-fever">
-                    <div class="item-info">
-                        <span class="item-name">黄金の麺棒 (フィーバー+10秒) 🥖</span>
-                    </div>
-                    <button class="buy-upgrade-btn" data-cost="50000">50,000 cookies</button>
-                </div>
-                <!-- Global Boost -->
-                <div class="upgrade-item" id="upgrade-global">
-                    <div class="item-info">
-                        <span class="item-name">シュガーコーティング (生産力1.2倍) ✨</span>
-                    </div>
-                    <button class="buy-upgrade-btn" data-cost="100000">100,000 cookies</button>
-                </div>
-
-                <!-- Premium Shop Section -->
-                <h3 class="premium-shop-title">💎 プレミアム強化 💎</h3>
-                <div class="upgrade-item premium" id="premium-fever">
-                    <div class="item-info">
-                        <span class="item-name">超フィーバー ⚡ (倍率アップ)</span>
-                        <span class="item-count">Lv.0</span>
-                    </div>
-                    <button class="buy-premium-btn">50 jewels</button>
-                </div>
-                <div class="upgrade-item premium" id="premium-spawn">
-                    <div class="item-info">
-                        <span class="item-name">幸運の星 🌟 (出現率アップ)</span>
-                        <span class="item-count">Lv.0</span>
-                    </div>
-                    <button class="buy-premium-btn">75 jewels</button>
-                </div>
-                <div class="upgrade-item premium" id="premium-autoclick">
-                    <div class="item-info">
-                        <span class="item-name">爆速クリッカー 🤖 (自動クリック)</span>
-                        <span class="item-count">Lv.0</span>
-                    </div>
-                    <button class="buy-premium-btn">100 jewels</button>
-                </div>
-                <div class="upgrade-item premium" id="premium-offline">
-                    <div class="item-info">
-                        <span class="item-name">不眠不休 😴 (放置効率アップ)</span>
-                        <span class="item-count">Lv.0</span>
-                    </div>
-                    <button class="buy-premium-btn">30 jewels</button>
-                </div>
-
-                <h3 class="premium-shop-title">💎 COMING SOON 💰</h3>
-                <div class="upgrade-item premium coming-soon-card">
-                    <div class="item-info">
-                        <span class="item-name">ジュエルチャージ</span>
-                        <p class="item-desc">課金ルートは現在準備中です。公開までお待ちください。</p>
-                    </div>
-                    <span class="coming-soon-badge">COMING SOON</span>
-                </div>
-            </div>
+        <div id="interact-popup">
+            <p class="text-xs" style="color: #9ca3af; margin-bottom: 0.25rem;">近づいたアイテム</p>
+            <p class="font-bold" style="margin-bottom: 0.5rem;">M416</p>
+            <button class="text-sm font-bold" style="background: #eab308; color: black; padding: 0.25rem 1rem; border-radius: 0.25rem; border: none;" onclick="pickup()">拾う</button>
         </div>
-
-        <!-- Billing Confirmation Modal (Simulation) -->
-        <div id="billing-modal" class="hidden">
-            <div class="billing-content">
-                <div class="billing-header">
-                    <h3>App Store (シミュレーション)</h3>
-                </div>
-                <div class="billing-body">
-                    <div class="product-icon">💎</div>
-                    <p id="billing-product-name">ジュエル 100個</p>
-                    <p id="billing-product-price">¥160</p>
-                    <div class="billing-info-box">
-                        <p>支払い方法: 模擬カード</p>
-                        <p>アカウント: user@example.com</p>
-                    </div>
-                </div>
-                <div class="billing-footer">
-                    <button id="billing-cancel-btn">キャンセル</button>
-                    <button id="billing-confirm-btn">承認して購入</button>
-                </div>
-            </div>
+        <div id="joystick-container">
+            <div id="joystick-handle"></div>
         </div>
-
-        <!-- Bonus Panel (Hidden by default) -->
-        <div id="bonus-panel" class="panel hidden">
-            <div class="panel-header">
-                <h2>ボーナス</h2>
-                <button class="close-panel">×</button>
-            </div>
-            <div id="bonus-items">
-                <div class="bonus-item-card" id="bonus-ad-fever">
-                    <div class="bonus-icon">⚡️</div>
-                    <div class="bonus-info">
-                        <h3>即時フィーバー</h3>
-                        <p>20秒間フィーバーを発動！</p>
-                    </div>
-                    <button class="ad-reward-btn" data-type="fever">広告を見る</button>
-                    <div class="cooldown-overlay hidden">
-                        <span class="cooldown-timer">00:00</span>
-                    </div>
-                </div>
-                <div class="bonus-item-card" id="bonus-ad-jewel">
-                    <div class="bonus-icon">💎</div>
-                    <div class="bonus-info">
-                        <h3>ジュエルギフト</h3>
-                        <p>ジュエルを5個獲得！</p>
-                    </div>
-                    <button class="ad-reward-btn" data-type="jewel">広告を見る</button>
-                    <div class="cooldown-overlay hidden">
-                        <span class="cooldown-timer">00:00</span>
-                    </div>
-                </div>
-                <div class="bonus-item-card" id="bonus-ad-boost">
-                    <div class="bonus-icon">🚀</div>
-                    <div class="bonus-info">
-                        <h3>生産力2倍ブースト</h3>
-                        <p>10分間、すべてが2倍！</p>
-                    </div>
-                    <button class="ad-reward-btn" data-type="boost">広告を見る</button>
-                    <div class="cooldown-overlay hidden">
-                        <span class="cooldown-timer">00:00</span>
-                    </div>
-                </div>
-            </div>
+        <div class="absolute bottom-10 right-32 flex flex-col items-end" style="gap: 1rem;">
+            <div class="btn-action" style="width: 80px; height: 80px; background: rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.4);" onclick="flash('FIRE!')">FIRE</div>
+            <div class="btn-action" onclick="toggleADS()">ADS</div>
         </div>
-
-        <!-- Stats Panel (Hidden by default) -->
-        <div id="stats-panel" class="panel hidden">
-            <div class="panel-header">
-                <h2>統計</h2>
-                <button class="close-panel">×</button>
-            </div>
-            <div id="stats-content">
-                <div class="stat-item">
-                    <span class="stat-label">獲得したボーナス</span>
-                    <span id="stat-bonuses" class="stat-value">0</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">ゲーム開始</span>
-                    <span id="stat-start-date" class="stat-value">-</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">焼いたクッキーの数</span>
-                    <span id="stat-total-baked" class="stat-value">0</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">完成した建物</span>
-                    <span id="stat-total-buildings" class="stat-value">0</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">タップごとのクッキーの数</span>
-                    <span id="stat-cookies-per-click" class="stat-value">1</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">最長コンボ</span>
-                    <span id="stat-max-combo" class="stat-value">0</span>
-                </div>
-                <div class="stats-section">
-                    <h3 class="stats-section-title">お菓子図鑑</h3>
-                    <div id="sweet-complete-banner" class="sweet-complete-banner hidden">
-                        <span class="sweet-complete-title">お菓子図鑑コンプリート！</span>
-                        <span class="sweet-complete-subtitle">キャンディショップ気分がアップ！</span>
-                    </div>
-                    <div id="sweet-encyclopedia-reward" class="sweet-reward-box">
-                        <span id="sweet-reward-status">未達成</span>
-                        <span id="sweet-reward-desc">4種類コンプリートで 💎30 + レア出現率アップ</span>
-                    </div>
-                    <div id="sweet-encyclopedia" class="sweet-encyclopedia-grid">
-                        <div class="sweet-entry locked" data-sweet-type="normal">
-                            <div class="sweet-entry-icon">🌟</div>
-                            <div class="sweet-entry-info">
-                                <span class="sweet-entry-name" data-name="フィーバースター">???</span>
-                                <span class="sweet-entry-desc" data-desc="FEVER x7 を発動">まだ見つけていません</span>
-                                <span class="sweet-entry-count">発見 0回</span>
-                            </div>
-                        </div>
-                        <div class="sweet-entry locked" data-sweet-type="jewel">
-                            <div class="sweet-entry-icon">💎</div>
-                            <div class="sweet-entry-info">
-                                <span class="sweet-entry-name" data-name="ジュエルスター">???</span>
-                                <span class="sweet-entry-desc" data-desc="ジュエル 2-4 個">まだ見つけていません</span>
-                                <span class="sweet-entry-count">発見 0回</span>
-                            </div>
-                        </div>
-                        <div class="sweet-entry locked" data-sweet-type="super">
-                            <div class="sweet-entry-icon">🔥</div>
-                            <div class="sweet-entry-info">
-                                <span class="sweet-entry-name" data-name="スーパースター">???</span>
-                                <span class="sweet-entry-desc" data-desc="x25 / 10秒">まだ見つけていません</span>
-                                <span class="sweet-entry-count">発見 0回</span>
-                            </div>
-                        </div>
-                        <div class="sweet-entry locked" data-sweet-type="rainbow">
-                            <div class="sweet-entry-icon">🌈</div>
-                            <div class="sweet-entry-info">
-                                <span class="sweet-entry-name" data-name="レインボースター">???</span>
-                                <span class="sweet-entry-desc" data-desc="大量クッキーボーナス">まだ見つけていません</span>
-                                <span class="sweet-entry-count">発見 0回</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="absolute bottom-10 right-10 flex flex-col" style="gap: 1rem;">
+            <div class="btn-action" onclick="flash('RELOAD')">RELOAD</div>
+            <div class="btn-action" onclick="flash('JUMP')">JUMP</div>
+        </div>
+        <div id="weapon-slot">
+            <span class="icon-label">MAIN</span>
+            <span class="text-sm font-bold">M416</span>
+        </div>
+        <div id="hp-container">
+            <div id="hp-fill"></div>
         </div>
     </div>
+<<<<<<< Updated upstream
 
     <!-- Ad Simulation Overlay -->
     <div id="ad-simulation-overlay" class="hidden">
@@ -598,6 +557,35 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-remote-config-compat.js"></script>
     <script src="script.js"></script>
+=======
+    <div id="toast" class="fixed top-1/4 left-1/2 -translate-x-1/2 px-4 py-2 rounded text-sm opacity-0 transition-opacity pointer-events-none" style="background: rgba(0,0,0,0.6)"></div>
+    <script>
+        console.log("PUPG Preview Loaded");
+        const handle = document.getElementById('joystick-handle');
+        const container = document.getElementById('joystick-container');
+        container.addEventListener('touchstart', (e) => { e.preventDefault(); updateJoystick(e.touches[0]); }, {passive: false});
+        container.addEventListener('touchmove', (e) => { e.preventDefault(); updateJoystick(e.touches[0]); }, {passive: false});
+        container.addEventListener('touchend', () => { handle.style.transform = 'translate(0, 0)'; });
+        function updateJoystick(touch) {
+            const rect = container.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            let dx = touch.clientX - centerX;
+            let dy = touch.clientY - centerY;
+            const dist = Math.min(60, Math.sqrt(dx*dx + dy*dy));
+            const angle = Math.atan2(dy, dx);
+            handle.style.transform = `translate(${Math.cos(angle)*dist}px, ${Math.sin(angle)*dist}px)`;
+        }
+        function flash(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg; t.style.opacity = '1';
+            setTimeout(() => t.style.opacity = '0', 1000);
+        }
+        function toggleADS() { flash('ADS'); }
+        function pickup() { document.getElementById('interact-popup').style.display = 'none'; flash('PICKUP'); }
+        setTimeout(() => { document.getElementById('interact-popup').style.display = 'block'; }, 2000);
+    </script>
+>>>>>>> Stashed changes
 </body>
 
 </html>
