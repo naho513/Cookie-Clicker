@@ -78,10 +78,6 @@
                 <button class="nav-tab" data-target="stats-panel">
                     <span class="tab-label">統計</span>
                 </button>
-                <button class="nav-tab" data-target="bonus-panel">
-                    <span class="tab-label">ボーナス</span>
-                    <span class="badge" id="bonus-badge">!</span>
-                </button>
             </div>
             <div class="wave-decoration"></div>
         </footer>
@@ -255,40 +251,6 @@
             </div>
         </div>
 
-        <!-- Bonus Panel -->
-        <div id="bonus-panel" class="panel hidden">
-            <div class="panel-header">
-                <h2>ボーナス</h2>
-                <button class="close-panel">×</button>
-            </div>
-            <div id="bonus-items">
-                <div class="bonus-item-card" id="bonus-ad-fever">
-                    <div class="bonus-icon">⚡️</div>
-                    <div class="bonus-info">
-                        <h3>即時フィーバー</h3>
-                        <p>20秒間フィーバーを発動！</p>
-                    </div>
-                    <button class="ad-reward-btn" data-type="fever" style="background: #999 !important; color: white !important;" disabled>Coming Soon</button>
-                </div>
-                <div class="bonus-item-card" id="bonus-ad-jewel">
-                    <div class="bonus-icon">💎</div>
-                    <div class="bonus-info">
-                        <h3>ジュエルギフト</h3>
-                        <p>ジュエルを5個獲得！</p>
-                    </div>
-                    <button class="ad-reward-btn" data-type="jewel" style="background: #999 !important; color: white !important;" disabled>Coming Soon</button>
-                </div>
-                <div class="bonus-item-card" id="bonus-ad-boost">
-                    <div class="bonus-icon">🚀</div>
-                    <div class="bonus-info">
-                        <h3>生産力2倍ブースト</h3>
-                        <p>10分間、すべてが2倍！</p>
-                    </div>
-                    <button class="ad-reward-btn" data-type="boost" style="background: #999 !important; color: white !important;" disabled>Coming Soon</button>
-                </div>
-            </div>
-        </div>
-
         <!-- Stats Panel -->
         <div id="stats-panel" class="panel hidden">
             <div class="panel-header">
@@ -338,7 +300,6 @@
             </div>
             <div class="modal-footer">
                 <button id="claim-offline-btn" class="modal-btn secondary">そのまま受け取る</button>
-                <button id="ad-double-offline-btn" class="modal-btn primary" style="background: #999 !important; border-color: #999 !important;" disabled>Coming Soon (2倍)</button>
             </div>
         </div>
     </div>
@@ -358,7 +319,6 @@
             </div>
             <div class="modal-footer">
                 <button id="claim-daily-btn" class="modal-btn secondary">そのまま受け取る</button>
-                <button id="ad-triple-daily-btn" class="modal-btn primary" style="background: #999 !important; border-color: #999 !important;" disabled>Coming Soon (3倍)</button>
             </div>
         </div>
     </div>

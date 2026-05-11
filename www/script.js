@@ -357,28 +357,18 @@ document.addEventListener('DOMContentLoaded', () => {
             if (target === 'buildings') {
                 buildingsPanel.classList.remove('hidden');
                 statsPanel.classList.add('hidden');
-                bonusPanel.classList.add('hidden');
                 upgradesPanel.classList.add('hidden');
                 settingsPanel.classList.add('hidden');
             } else if (target === 'upgrades-panel') {
                 upgradesPanel.classList.remove('hidden');
                 buildingsPanel.classList.add('hidden');
                 statsPanel.classList.add('hidden');
-                bonusPanel.classList.add('hidden');
                 settingsPanel.classList.add('hidden');
                 updateDisplay(); 
-            } else if (target === 'bonus-panel') {
-                bonusPanel.classList.remove('hidden');
-                buildingsPanel.classList.add('hidden');
-                statsPanel.classList.add('hidden');
-                upgradesPanel.classList.add('hidden');
-                settingsPanel.classList.add('hidden');
-                updateDisplay();
             } else if (target === 'stats-panel') {
                 statsPanel.classList.remove('hidden');
                 buildingsPanel.classList.add('hidden');
                 upgradesPanel.classList.add('hidden');
-                bonusPanel.classList.add('hidden');
                 settingsPanel.classList.add('hidden');
                 updateDisplay(); 
             }
@@ -1383,14 +1373,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const button = itemDiv.querySelector('.buy-upgrade-btn');
             
             if (upgrade.purchased) {
-                button.textContent = `🎬 広告で強化 (Lv.${upgrade.level})`;
-                button.disabled = false; // 広告強化は常に可能
+                // 広告強化ボタンを非表示にする
+                button.style.display = 'none';
                 itemDiv.style.opacity = '1.0';
-                button.style.backgroundColor = '#4dabf7'; // 青色に変更して区別
             } else {
                 button.textContent = `${Math.floor(upgrade.cost).toLocaleString()} cookies`;
                 button.disabled = (cookies < upgrade.cost);
                 button.style.backgroundColor = ''; // デフォルトに戻す
+                button.style.display = 'block';
                 if (cookies >= upgrade.cost) buyableUpgrades++;
             }
         });
@@ -1412,31 +1402,11 @@ document.addEventListener('DOMContentLoaded', () => {
         upgradeBadge.textContent = buyableUpgrades;
         upgradeBadge.style.display = buyableUpgrades > 0 ? 'block' : 'none';
 
-        // ボーナス項目の更新 (クールダウン表示)
+        // ボーナス項目の更新 (クールダウン表示) - 広告削除のため不要
+        /*
         let bonusAvailable = false;
-        Object.keys(cooldowns).forEach(type => {
-            const itemCard = document.getElementById(`bonus-ad-${type}`);
-            if (!itemCard) return;
-            const overlay = itemCard.querySelector('.cooldown-overlay');
-            const timer = itemCard.querySelector('.cooldown-timer');
-            const button = itemCard.querySelector('.ad-reward-btn');
-
-            const now = Date.now();
-            if (now < cooldowns[type]) {
-                overlay.classList.remove('hidden');
-                const remaining = Math.ceil((cooldowns[type] - now) / 1000);
-                const min = Math.floor(remaining / 60);
-                const sec = remaining % 60;
-                timer.textContent = `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
-                button.disabled = true;
-            } else {
-                overlay.classList.add('hidden');
-                button.disabled = false;
-                bonusAvailable = true;
-            }
-        });
-
-        if (bonusBadge) bonusBadge.style.display = bonusAvailable ? 'block' : 'none';
+        ...
+        */
 
         // 統計情報の更新
         statBonuses.textContent = bonusesEarned;
