@@ -476,7 +476,7 @@ body {
     align-items: center;
     z-index: 10000;
     opacity: 1;
-    transition: opacity 0.5s ease-in-out;
+    transition: opacity 1.0s ease-in-out;
 }
 
 #brand-splash.fade-out {
@@ -488,13 +488,13 @@ body {
     max-width: 80%;
     max-height: 60%;
     opacity: 0;
-    transform: scale(0.86);
-    transition: opacity 0.5s ease-in-out, transform 0.5s ease-out;
+    transform: scale(0.9);
+    transition: opacity 1.0s ease-in-out, transform 1.0s ease-out;
 }
 
 #brand-logo.fade-in {
     opacity: 1;
-    transform: scale(1.08);
+    transform: scale(1);
 }
 
 .brand-splash-tap {

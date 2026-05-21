@@ -35,8 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
             rewardedAdUnitId: 'ca-app-pub-9138341481603997/3187665067'
         }
     };
-    const CURRENT_APP_VERSION = '1.0.0';
-    const LATEST_APP_VERSION = '1.0.1';
+    const CURRENT_APP_VERSION = '1.0.5';
+    const LATEST_APP_VERSION = '1.0.5';
     const UPDATE_STORE_URL = 'https://apps.apple.com/';
     let rewardedAdBusy = false;
     let admobInitialized = false;
@@ -96,12 +96,12 @@ document.addEventListener('DOMContentLoaded', () => {
     async function showBrandSplash() {
         if (!brandSplash || !brandLogo) return;
 
-        await wait(50);
+        await wait(100);
         brandLogo.classList.add('fade-in');
-        await wait(500);
-        await wait(500);
+        await wait(1500); // 1.0s fade-in + 0.5s static
+
         brandLogo.classList.remove('fade-in');
-        await wait(500);
+        await wait(1000); // 1.0s fade-out
 
         let tapText = brandSplash.querySelector('.brand-splash-tap');
         if (!tapText) {
@@ -110,8 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
             tapText.className = 'brand-splash-tap';
             brandSplash.appendChild(tapText);
         }
-
-        brandSplash.style.pointerEvents = 'auto';
 
         await new Promise(resolve => {
             const onTap = (e) => {
@@ -125,9 +123,8 @@ document.addEventListener('DOMContentLoaded', () => {
             brandSplash.addEventListener('touchend', onTap, true);
         });
 
-        brandSplash.style.pointerEvents = 'none';
         brandSplash.classList.add('fade-out');
-        await wait(500);
+        await wait(1000);
         brandSplash.remove();
     }
 
@@ -797,6 +794,15 @@ document.addEventListener('DOMContentLoaded', () => {
     function getRewardedAdUnitId() {
         const platform = getAdPlatform();
         return ADS_CONFIG[platform]?.rewardedAdUnitId || ADS_CONFIG.android.rewardedAdUnitId;
+    }
+
+    function hasNativeRewardedAdBridge() {
+        return Boolean(
+            window.AndroidRewardedAd?.showRewardedAd ||
+            window.Capacitor?.Plugins?.AdMobBridge?.showRewardedAd ||
+            window.Capacitor?.Plugins?.AdMob?.showRewardedAd ||
+            (window.Capacitor?.Plugins?.AdMob?.prepareRewardVideoAd && window.Capacitor?.Plugins?.AdMob?.showRewardVideoAd)
+        );
     }
 
     async function requestIosTrackingIfNeeded(admobPlugin) {

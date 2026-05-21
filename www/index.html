@@ -11,21 +11,9 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Brand Splash Screen -->
+    <!-- Brand Splash Screen (仕様準拠) -->
     <div id="brand-splash">
         <img src="assets/images/brand_logo.png" alt="Brand Logo" id="brand-logo">
-    </div>
-
-    <!-- Update Notification Overlay -->
-    <div id="update-overlay" class="screen hidden" style="background: rgba(0,0,0,0.8); z-index: 20000; justify-content: center; align-items: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none;">
-        <div class="glass-card" style="max-width: 85%; background: white; padding: 20px; border-radius: 15px; text-align: center; color: #333;">
-            <h2 style="font-family: 'Luckiest Guy', cursive; color: #4dabf7;">アップデートのお知らせ</h2>
-            <p class="subtitle">新しいバージョンがあります。<br>最新版にアップデートして、より快適に使いましょう！</p>
-            <div class="menu-group" style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
-                <button id="update-now-btn" class="primary-btn" style="background: #4dabf7; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold;">今すぐ更新</button>
-                <button id="update-later-btn" class="secondary-btn" style="background: #eee; color: #666; border: none; padding: 10px; border-radius: 8px;">あとで</button>
-            </div>
-        </div>
     </div>
 
     <div id="game-app">
@@ -77,6 +65,10 @@
                 </button>
                 <button class="nav-tab" data-target="stats-panel">
                     <span class="tab-label">統計</span>
+                </button>
+                <button class="nav-tab" data-target="bonus-panel">
+                    <span class="tab-label">ボーナス</span>
+                    <span class="badge" id="bonus-badge">!</span>
                 </button>
             </div>
             <div class="wave-decoration"></div>
@@ -155,7 +147,7 @@
             </div>
         </div>
 
-        <!-- Settings Panel -->
+        <!-- Settings Panel (Hidden by default) -->
         <div id="settings-panel" class="panel hidden">
             <div class="panel-header">
                 <h2>設定</h2>
@@ -174,6 +166,15 @@
                     <span class="setting-label">自動クリックの触感</span>
                     <button id="auto-haptics-toggle-btn" class="toggle-btn off">OFF</button>
                 </div>
+                <div class="setting-item">
+                    <span class="setting-label">遊び方</span>
+                    <div class="help-text">
+                        <p>🍪 クッキーをタップして焼こう！</p>
+                        <p>🏗️ 建物で自動生産を増やそう！</p>
+                        <p>✨ 強化アイテムで効率アップ！</p>
+                        <p>🌟 流れ星をタップしてフィーバー！</p>
+                    </div>
+                </div>
                 <div class="setting-item danger-zone">
                     <h3>データ管理</h3>
                     <button id="reset-btn-main" class="modal-btn secondary">セーブを削除してリセット</button>
@@ -181,19 +182,21 @@
             </div>
         </div>
 
-        <!-- Upgrades Panel -->
+        <!-- Upgrades Panel (Hidden by default) -->
         <div id="upgrades-panel" class="panel hidden">
             <div class="panel-header">
                 <h2>アップグレード</h2>
                 <button class="close-panel">×</button>
             </div>
             <div id="upgrades-items">
+                <!-- Click Upgrade -->
                 <div class="upgrade-item" id="upgrade-click">
                     <div class="item-info">
                         <span class="item-name">強化指先 (クリック2倍) ☝️</span>
                     </div>
                     <button class="buy-upgrade-btn" data-cost="500">500 cookies</button>
                 </div>
+                <!-- Building Specific -->
                 <div class="upgrade-item" id="upgrade-grandma">
                     <div class="item-info">
                         <span class="item-name">秘伝レシピ (おばあちゃん2倍) 📜</span>
@@ -206,12 +209,14 @@
                     </div>
                     <button class="buy-upgrade-btn" data-cost="10000">10,000 cookies</button>
                 </div>
+                <!-- Fever Upgrade -->
                 <div class="upgrade-item" id="upgrade-fever">
                     <div class="item-info">
                         <span class="item-name">黄金の麺棒 (フィーバー+10秒) 🥖</span>
                     </div>
                     <button class="buy-upgrade-btn" data-cost="50000">50,000 cookies</button>
                 </div>
+                <!-- Global Boost -->
                 <div class="upgrade-item" id="upgrade-global">
                     <div class="item-info">
                         <span class="item-name">シュガーコーティング (生産力1.2倍) ✨</span>
@@ -219,6 +224,7 @@
                     <button class="buy-upgrade-btn" data-cost="100000">100,000 cookies</button>
                 </div>
 
+                <!-- Premium Shop Section -->
                 <h3 class="premium-shop-title">💎 プレミアム強化 💎</h3>
                 <div class="upgrade-item premium" id="premium-fever">
                     <div class="item-info">
@@ -248,10 +254,84 @@
                     </div>
                     <button class="buy-premium-btn">30 jewels</button>
                 </div>
+
+                <h3 class="premium-shop-title">💎 COMING SOON 💰</h3>
+                <div class="upgrade-item premium coming-soon-card">
+                    <div class="item-info">
+                        <span class="item-name">ジュエルチャージ</span>
+                        <p class="item-desc">課金ルートは現在準備中です。公開までお待ちください。</p>
+                    </div>
+                    <span class="coming-soon-badge">COMING SOON</span>
+                </div>
             </div>
         </div>
 
-        <!-- Stats Panel -->
+        <!-- Billing Confirmation Modal (Simulation) -->
+        <div id="billing-modal" class="hidden">
+            <div class="billing-content">
+                <div class="billing-header">
+                    <h3>App Store (シミュレーション)</h3>
+                </div>
+                <div class="billing-body">
+                    <div class="product-icon">💎</div>
+                    <p id="billing-product-name">ジュエル 100個</p>
+                    <p id="billing-product-price">¥160</p>
+                    <div class="billing-info-box">
+                        <p>支払い方法: 模擬カード</p>
+                        <p>アカウント: user@example.com</p>
+                    </div>
+                </div>
+                <div class="billing-footer">
+                    <button id="billing-cancel-btn">キャンセル</button>
+                    <button id="billing-confirm-btn">承認して購入</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bonus Panel (Hidden by default) -->
+        <div id="bonus-panel" class="panel hidden">
+            <div class="panel-header">
+                <h2>ボーナス</h2>
+                <button class="close-panel">×</button>
+            </div>
+            <div id="bonus-items">
+                <div class="bonus-item-card" id="bonus-ad-fever">
+                    <div class="bonus-icon">⚡️</div>
+                    <div class="bonus-info">
+                        <h3>即時フィーバー</h3>
+                        <p>20秒間フィーバーを発動！</p>
+                    </div>
+                    <button class="ad-reward-btn" data-type="fever">広告を見る</button>
+                    <div class="cooldown-overlay hidden">
+                        <span class="cooldown-timer">00:00</span>
+                    </div>
+                </div>
+                <div class="bonus-item-card" id="bonus-ad-jewel">
+                    <div class="bonus-icon">💎</div>
+                    <div class="bonus-info">
+                        <h3>ジュエルギフト</h3>
+                        <p>ジュエルを5個獲得！</p>
+                    </div>
+                    <button class="ad-reward-btn" data-type="jewel">広告を見る</button>
+                    <div class="cooldown-overlay hidden">
+                        <span class="cooldown-timer">00:00</span>
+                    </div>
+                </div>
+                <div class="bonus-item-card" id="bonus-ad-boost">
+                    <div class="bonus-icon">🚀</div>
+                    <div class="bonus-info">
+                        <h3>生産力2倍ブースト</h3>
+                        <p>10分間、すべてが2倍！</p>
+                    </div>
+                    <button class="ad-reward-btn" data-type="boost">広告を見る</button>
+                    <div class="cooldown-overlay hidden">
+                        <span class="cooldown-timer">00:00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Panel (Hidden by default) -->
         <div id="stats-panel" class="panel hidden">
             <div class="panel-header">
                 <h2>統計</h2>
@@ -282,11 +362,72 @@
                     <span class="stat-label">最長コンボ</span>
                     <span id="stat-max-combo" class="stat-value">0</span>
                 </div>
+                <div class="stats-section">
+                    <h3 class="stats-section-title">お菓子図鑑</h3>
+                    <div id="sweet-complete-banner" class="sweet-complete-banner hidden">
+                        <span class="sweet-complete-title">お菓子図鑑コンプリート！</span>
+                        <span class="sweet-complete-subtitle">キャンディショップ気分がアップ！</span>
+                    </div>
+                    <div id="sweet-encyclopedia-reward" class="sweet-reward-box">
+                        <span id="sweet-reward-status">未達成</span>
+                        <span id="sweet-reward-desc">4種類コンプリートで 💎30 + レア出現率アップ</span>
+                    </div>
+                    <div id="sweet-encyclopedia" class="sweet-encyclopedia-grid">
+                        <div class="sweet-entry locked" data-sweet-type="normal">
+                            <div class="sweet-entry-icon">🌟</div>
+                            <div class="sweet-entry-info">
+                                <span class="sweet-entry-name" data-name="フィーバースター">???</span>
+                                <span class="sweet-entry-desc" data-desc="FEVER x7 を発動">まだ見つけていません</span>
+                                <span class="sweet-entry-count">発見 0回</span>
+                            </div>
+                        </div>
+                        <div class="sweet-entry locked" data-sweet-type="jewel">
+                            <div class="sweet-entry-icon">💎</div>
+                            <div class="sweet-entry-info">
+                                <span class="sweet-entry-name" data-name="ジュエルスター">???</span>
+                                <span class="sweet-entry-desc" data-desc="ジュエル 2-4 個">まだ見つけていません</span>
+                                <span class="sweet-entry-count">発見 0回</span>
+                            </div>
+                        </div>
+                        <div class="sweet-entry locked" data-sweet-type="super">
+                            <div class="sweet-entry-icon">🔥</div>
+                            <div class="sweet-entry-info">
+                                <span class="sweet-entry-name" data-name="スーパースター">???</span>
+                                <span class="sweet-entry-desc" data-desc="x25 / 10秒">まだ見つけていません</span>
+                                <span class="sweet-entry-count">発見 0回</span>
+                            </div>
+                        </div>
+                        <div class="sweet-entry locked" data-sweet-type="rainbow">
+                            <div class="sweet-entry-icon">🌈</div>
+                            <div class="sweet-entry-info">
+                                <span class="sweet-entry-name" data-name="レインボースター">???</span>
+                                <span class="sweet-entry-desc" data-desc="大量クッキーボーナス">まだ見つけていません</span>
+                                <span class="sweet-entry-count">発見 0回</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Modals -->
+    <!-- Ad Simulation Overlay -->
+    <div id="ad-simulation-overlay" class="hidden">
+        <div class="ad-content">
+            <div class="ad-timer-container">
+                <span id="ad-timer-count">5</span>
+            </div>
+            <div class="ad-video-mock">
+                <div class="ad-placeholder">
+                    <p>ADVERTISING</p>
+                    <p class="ad-subtitle">動画再生中...</p>
+                </div>
+            </div>
+            <div class="ad-progress-bar"><div id="ad-progress"></div></div>
+        </div>
+    </div>
+
+    <!-- Offline Bonus Modal -->
     <div id="offline-modal" class="hidden">
         <div class="modal-content">
             <div class="modal-header">
@@ -300,10 +441,12 @@
             </div>
             <div class="modal-footer">
                 <button id="claim-offline-btn" class="modal-btn secondary">そのまま受け取る</button>
+                <button id="ad-double-offline-btn" class="modal-btn primary">🎬 広告を見て2倍にする！</button>
             </div>
         </div>
     </div>
 
+    <!-- Daily Bonus Modal -->
     <div id="daily-modal" class="hidden">
         <div class="modal-content">
             <div class="modal-header">
@@ -319,14 +462,32 @@
             </div>
             <div class="modal-footer">
                 <button id="claim-daily-btn" class="modal-btn secondary">そのまま受け取る</button>
+                <button id="ad-triple-daily-btn" class="modal-btn primary">🎬 広告を見て3倍にする！</button>
             </div>
         </div>
     </div>
 
-    <!-- Firebase SDK (Compat) -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-remote-config-compat.js"></script>
+    <!-- 旧アップデートモーダル (既存機能維持) -->
+    <div id="update-modal" class="hidden">
+        <div class="modal-content update-modal-content">
+            <div class="modal-header">
+                <h2>アプリ更新のお知らせ</h2>
+            </div>
+            <div class="modal-body">
+                <div class="offline-icon">🔔</div>
+                <p id="update-message">新しいバージョンがあります。</p>
+                <div id="update-version-box" class="reward-box">
+                    <span id="current-version-label">現在: 1.0.0</span><br>
+                    <span id="latest-version-label">最新: 1.0.1</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="update-later-btn" class="modal-btn secondary">あとで</button>
+                <button id="update-now-btn" class="modal-btn primary">更新する</button>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
